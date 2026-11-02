@@ -30,4 +30,4 @@ git clone --depth 1 https://github.com/ubicomplab/oximetry-phone-cam-data data/r
   30 × the number of ground-truth rows. They range from 29.97 to 30.09 frames per row, a difference
   of −29 to +79 frames (−0.97 s to +2.63 s by the end of a recording if row *i* were mapped to frame
   *i*·30). `src/dataset.py` therefore maps ground-truth row *i* to frame
-  round(*i* · n_frames / n_gt_rows) for each recording. See `results/part1_alignment.csv`.
+  round(*i* · n_frames / n_gt_rows) for each recording. See `results/section2_alignment.csv`.

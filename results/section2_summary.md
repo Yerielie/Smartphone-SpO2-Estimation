@@ -1,8 +1,8 @@
-# Part 1: Ratio-of-ratios on the Hoffman et al. (2022) dataset
+# Section 2: Ratio-of-Ratios (Formula) on the Hoffman et al. (2022) dataset
 
 All numbers below were produced by `python src/public_data_spo2_hr_calibrated_formula.py`. Full-precision values are in
-`part1_metrics.csv`, `part1_fold_coefficients.csv`, `part1_r_correlation.csv` and
-`part1_alignment.csv`. This summary shows them to 2–3 decimals.
+`section2_metrics.csv`, `section2_fold_coefficients.csv`, `section2_r_correlation.csv` and
+`section2_alignment.csv`. This summary shows them to 2–3 decimals.
 
 ## Method
 
@@ -13,7 +13,7 @@ windows**. Their mean ground-truth SpO2 is 88.43%, and 49.4% of them are below 9
 
 **Time alignment.** The camera and oximeters were started and stopped together, but the
 recordings have 29.97–30.09 frames per ground-truth row rather than exactly 30
-(`part1_alignment.csv`). Each recording is therefore stretched to its own length: ground-truth
+(`section2_alignment.csv`). Each recording is therefore stretched to its own length: ground-truth
 row *i* maps to frame round(*i* · n_frames / n_gt_rows), so the first and last rows line up with
 both ends of the video. The earlier version used frame *i* · 30, which drifted by between −0.97 s
 and +2.63 s by the end of a recording. Both versions are compared [below](#before--after-the-alignment-fix).
@@ -43,7 +43,7 @@ For hypoxemia classification, positive means SpO2 < 90%, applied to both ground 
 | red/green, fixed 110−25R | 8.31 ± 2.81 | 10.70 ± 3.29 | −0.85 ± 0.78 | 8.15 | 10.96 | −0.85 | 5.09 | 0.129 | 0.831 |
 | red/green, calibrated LOSO | 7.55 ± 2.23 | 9.12 ± 3.01 | −0.35 ± 0.72 | 7.50 | 9.47 | −0.38 | −0.65 | 0.963 | 0.050 |
 
-By mean fold MAE, the best calibrated model is **red/blue** (`part1_bland_altman_best.png`). Its
+By mean fold MAE, the best calibrated model is **red/blue** (`section2_bland_altman_best.png`). Its
 Bland-Altman bias is −0.61, and its 95% limits of agreement are −18.43 to +17.22 percentage points.
 
 ### MAE per test subject
@@ -99,18 +99,18 @@ not strictly comparable.
 
 The main issue is that the linear fit across subjects comes out almost flat:
 
-- **Coefficients from all subjects** (`part1_coefficients.json`): red/blue a = 85.48, b = −3.15;
+- **Coefficients from all subjects** (`section2_coefficients.json`): red/blue a = 85.48, b = −3.15;
   red/green a = 89.09, b = 1.01. For red/blue, b is negative, meaning predicted SpO2 *rises* with R,
   which is the opposite of the physiology. The JSON file flags this with a warning. Both slopes are
   so small that the model mostly predicts close to the training mean (about 88%).
-- **Within each recording, R often does track SpO2 in the expected direction** (`part1_r_correlation.csv`).
+- **Within each recording, R often does track SpO2 in the expected direction** (`section2_r_correlation.csv`).
   For red/green, Pearson r(R, SpO2) is negative in 9 of 12 recordings, down to −0.89 (100006 Left).
   Across all recordings pooled, though, r is −0.03 for red/green and +0.10 for red/blue.
 - **R's offset differs between recordings.** The median red/blue R ranges from 0.74 to 1.39 across
   recordings, and subject 100001 Right (median 1.39) has a *positive* correlation. When 100001 is
   left out of training, the fitted slope has the expected sign (red/blue b = 12.11, red/green
   b = 19.47). In the other five folds, which include 100001 in training, the slope is near zero or
-  inverted (`part1_fold_coefficients.csv`). Subject 100001 also has the largest error in every model.
+  inverted (`section2_fold_coefficients.csv`). Subject 100001 also has the largest error in every model.
 - **The hypoxemia classifier is therefore close to trivial.** The calibrated models predict values
   near 88%, below the 90% cut-off, so almost every window is classified as hypoxemic. That gives a
   high sensitivity (0.94–0.96) but a specificity of about 0.05. In five of the six test subjects,
@@ -135,7 +135,7 @@ are available).
 
 **A 10-second window helps.** On the same windows, MAE drops from 4.68 to 3.22 bpm and r rises from
 0.705 to 0.867. Coverage also rises from 95.5% to 99.5%. The 3-s window produces outliers up to
-225 bpm, when only two close peaks are found (`part1_hr_scatter.png`). The 10-s window mostly
+225 bpm, when only two close peaks are found (`section2_hr_scatter.png`). The 10-s window mostly
 under-estimates instead, with a cluster of low estimates for ground-truth pulse of 55–70 bpm.
 
 ## Before / after the alignment fix
@@ -180,11 +180,11 @@ does or no longer fits inside the video. In total this is a net loss of 4 window
 
 | File | Content |
 |---|---|
-| `part1_metrics.csv` | Every metric per model and scope (per subject, folds mean, folds sd, pooled), plus HR |
-| `part1_coefficients.json` | a, b fitted on all subjects for both pairs, plus preprocessing details |
-| `part1_fold_coefficients.csv` | a, b for each LOSO fold |
-| `part1_r_correlation.csv` | Median R and r(R, SpO2) for each recording |
-| `part1_alignment.csv` | Frame count vs ground-truth length for each recording |
-| `part1_scatter_red_blue.png`, `part1_scatter_red_green.png` | Predicted vs ground-truth SpO2 |
-| `part1_bland_altman_best.png` | Bland-Altman plot for red/blue calibrated |
-| `part1_hr_scatter.png` | Estimated HR vs ground truth, 3-s and 10-s windows |
+| `section2_metrics.csv` | Every metric per model and scope (per subject, folds mean, folds sd, pooled), plus HR |
+| `section2_coefficients.json` | a, b fitted on all subjects for both pairs, plus preprocessing details |
+| `section2_fold_coefficients.csv` | a, b for each LOSO fold |
+| `section2_r_correlation.csv` | Median R and r(R, SpO2) for each recording |
+| `section2_alignment.csv` | Frame count vs ground-truth length for each recording |
+| `section2_scatter_red_blue.png`, `section2_scatter_red_green.png` | Predicted vs ground-truth SpO2 |
+| `section2_bland_altman_best.png` | Bland-Altman plot for red/blue calibrated |
+| `section2_hr_scatter.png` | Estimated HR vs ground truth, 3-s and 10-s windows |

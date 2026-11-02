@@ -1,4 +1,4 @@
-"""Part 1: classical ratio-of-ratios SpO2 + peak-based heart rate on the Hoffman et al. (2022) data.
+"""Section 2: classical ratio-of-ratios SpO2 + peak-based heart rate on the Hoffman et al. (2022) data.
 
 Signal processing mirrors src/video_spo2_hr_fixed_formula.py (SpO2Estimator):
   * Butterworth band-pass, order 1, 0.67-4.0 Hz, filtfilt
@@ -283,7 +283,7 @@ def main():
     RESULTS.mkdir(exist_ok=True)
 
     align = alignment_report()
-    align.to_csv(RESULTS / "part1_alignment.csv", index=False)
+    align.to_csv(RESULTS / "section2_alignment.csv", index=False)
 
     win3 = build_windows(window_sec=3.0)
     win10 = build_windows(window_sec=10.0)
@@ -293,10 +293,10 @@ def main():
     hr_rows, hr_out = evaluate_hr(win3, win10)
 
     metrics = pd.DataFrame(spo2_rows + hr_rows)
-    metrics.to_csv(RESULTS / "part1_metrics.csv", index=False)
-    pd.DataFrame(fold_coefs).to_csv(RESULTS / "part1_fold_coefficients.csv", index=False)
+    metrics.to_csv(RESULTS / "section2_metrics.csv", index=False)
+    pd.DataFrame(fold_coefs).to_csv(RESULTS / "section2_fold_coefficients.csv", index=False)
     corr = per_recording_correlation(win3, preds)
-    corr.to_csv(RESULTS / "part1_r_correlation.csv", index=False)
+    corr.to_csv(RESULTS / "section2_r_correlation.csv", index=False)
 
     # Best calibrated model = lowest mean MAE across folds
     cal = metrics[(metrics.scope == "folds mean") & metrics.model.str.contains("calibrated")]
@@ -322,13 +322,13 @@ def main():
         "training_data": {"subjects": SUBJECTS, "hands": ["Left", "Right"], "n_windows": int(len(y)),
                           "gt": "Masimo Radical-7 (SpO2 5)", "excluded": "GT SpO2 < 70 or missing"},
     }
-    (RESULTS / "part1_coefficients.json").write_text(json.dumps(out, indent=2))
+    (RESULTS / "section2_coefficients.json").write_text(json.dumps(out, indent=2))
 
     for pair in PAIRS:
         fname = pair.replace("/", "_")
-        plot_scatter(y, preds, pair, RESULTS / f"part1_scatter_{fname}.png")
-    plot_bland_altman(y, preds[best]["pred"], best, RESULTS / "part1_bland_altman_best.png")
-    plot_hr(hr_out, hr_rows, RESULTS / "part1_hr_scatter.png")
+        plot_scatter(y, preds, pair, RESULTS / f"section2_scatter_{fname}.png")
+    plot_bland_altman(y, preds[best]["pred"], best, RESULTS / "section2_bland_altman_best.png")
+    plot_hr(hr_out, hr_rows, RESULTS / "section2_hr_scatter.png")
 
     # Console summary
     pd.set_option("display.width", 200)

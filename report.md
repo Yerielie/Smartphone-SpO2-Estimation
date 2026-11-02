@@ -2,7 +2,7 @@
 
 ## Contents
 1. [Paper Analysis](#1-paper-analysis)
-2. [Ratio-of-Ratios (Formula)](results/part1_summary.md)
+2. [Ratio-of-Ratios (Formula)](results/section2_summary.md)
 3. CNN Reimplementation *(in progress)*
 4. Application to My Fingertip Video *(in progress)*
 5. Discussion and Limitations *(in progress)*
