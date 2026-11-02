@@ -2,7 +2,7 @@
 
 ## Contents
 1. [Paper Analysis](#1-paper-analysis)
-2. Part 1 – Ratio-of-Ratios with Calibration *(in progress)*
+2. [Part 1 – Ratio-of-Ratios with Calibration](results/part1_summary.md)
 3. Part 2 – CNN Reimplementation *(in progress)*
 4. Part 3 – Application to a New Smartphone Video *(in progress)*
 5. Limitations *(in progress)*

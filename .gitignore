@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Public dataset (cloned separately, see data/README.md)
+data/raw/
