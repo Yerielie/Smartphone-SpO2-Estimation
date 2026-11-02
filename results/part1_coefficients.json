@@ -1,0 +1,48 @@
+{
+  "formula": "SpO2 = a - b * R",
+  "R_definition": {
+    "red/blue": "(AC_R/DC_R)/(AC_B/DC_B)",
+    "red/green": "(AC_R/DC_R)/(AC_G/DC_G)"
+  },
+  "coefficients": {
+    "red/blue": {
+      "a": 85.53984048061093,
+      "b": -3.0839861217899376,
+      "warning": "b <= 0: fitted SpO2 does not decrease with R; the fit is not physiologically meaningful"
+    },
+    "red/green": {
+      "a": 89.13270038270899,
+      "b": 1.0583968397303962
+    }
+  },
+  "best_pair_by_loso_mae": "red/blue",
+  "preprocessing": {
+    "bandpass_hz": [
+      0.67,
+      4.0
+    ],
+    "butter_order": 1,
+    "filter": "filtfilt",
+    "AC": "std of band-passed window",
+    "DC": "mean of raw window",
+    "window_sec": 3.0,
+    "fs_hz": 30
+  },
+  "training_data": {
+    "subjects": [
+      "100001",
+      "100002",
+      "100003",
+      "100004",
+      "100005",
+      "100006"
+    ],
+    "hands": [
+      "Left",
+      "Right"
+    ],
+    "n_windows": 11572,
+    "gt": "Masimo Radical-7 (SpO2 5)",
+    "excluded": "GT SpO2 < 70 or missing"
+  }
+}
