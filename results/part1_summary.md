@@ -18,7 +18,7 @@ row *i* maps to frame round(*i* · n_frames / n_gt_rows), so the first and last 
 both ends of the video. The earlier version used frame *i* · 30, which drifted by between −0.97 s
 and +2.63 s by the end of a recording. Both versions are compared [below](#before--after-the-alignment-fix).
 
-**Signal processing** (same as `src/spo2_hr_from_video.py`):
+**Signal processing** (same as `src/video_fixed_formula.py`):
 - 3-s window (90 frames) centred on the aligned frame
 - Butterworth band-pass, order 1, 0.67–4.0 Hz, `filtfilt`
 - AC = std of the filtered window, DC = mean of the raw window
