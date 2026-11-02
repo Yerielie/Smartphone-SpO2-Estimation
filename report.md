@@ -2,10 +2,10 @@
 
 ## Contents
 1. [Paper Analysis](#1-paper-analysis)
-2. [Part 1 – Ratio-of-Ratios with Calibration](results/part1_summary.md)
-3. Part 2 – CNN Reimplementation *(in progress)*
-4. Part 3 – Application to a New Smartphone Video *(in progress)*
-5. Limitations *(in progress)*
+2. [Ratio-of-Ratios (Formula)](results/part1_summary.md)
+3. CNN Reimplementation *(in progress)*
+4. Application to My Fingertip Video *(in progress)*
+5. Discussion and Limitations *(in progress)*
 
 ---
 
@@ -51,6 +51,6 @@ Pulse oximeters estimate SpO2 from photoplethysmography (PPG), but they require 
 - **Clinical use:** The authors state the accuracy is not sufficient for medical use
 
 ### 1.7 Implications for This Project
-- The CNN code was not released, so the model is reimplemented from the paper's description (Part 2)
-- The ratio-of-ratios baseline (MAE 7.12%) gives a reference point for the calibrated formula (Part 1)
-- The single-device limitation is tested directly by applying the models to a video from a different phone (Part 3)
+- The CNN code was not released, so the model is reimplemented from the paper's description (Section 3)
+- The ratio-of-ratios baseline (MAE 7.12%) gives a reference point for the calibrated formula (Section 2)
+- The single-device limitation is tested directly by applying the models to a video from a different phone (Section 4)
