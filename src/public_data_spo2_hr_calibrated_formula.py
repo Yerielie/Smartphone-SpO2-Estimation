@@ -1,6 +1,6 @@
 """Part 1: classical ratio-of-ratios SpO2 + peak-based heart rate on the Hoffman et al. (2022) data.
 
-Signal processing mirrors src/video_fixed_formula.py (SpO2Estimator):
+Signal processing mirrors src/video_spo2_hr_fixed_formula.py (SpO2Estimator):
   * Butterworth band-pass, order 1, 0.67-4.0 Hz, filtfilt
   * AC = std of the filtered window, DC = mean of the raw window
   * R  = (AC_red / DC_red) / (AC_x / DC_x),   x = blue (reference) or green
@@ -10,7 +10,7 @@ Signal processing mirrors src/video_fixed_formula.py (SpO2Estimator):
 Calibrated model SpO2 = a - b R is evaluated with leave-one-subject-out CV
 (both hands of a subject are always in the same fold).
 
-Run from the repository root:  python src/ratio_of_ratios.py
+Run from the repository root:  python src/public_data_spo2_hr_calibrated_formula.py
 """
 import json
 from pathlib import Path

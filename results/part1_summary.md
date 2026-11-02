@@ -1,6 +1,6 @@
 # Part 1: Ratio-of-ratios on the Hoffman et al. (2022) dataset
 
-All numbers below were produced by `python src/ratio_of_ratios.py`. Full-precision values are in
+All numbers below were produced by `python src/public_data_spo2_hr_calibrated_formula.py`. Full-precision values are in
 `part1_metrics.csv`, `part1_fold_coefficients.csv`, `part1_r_correlation.csv` and
 `part1_alignment.csv`. This summary shows them to 2–3 decimals.
 
@@ -18,7 +18,7 @@ row *i* maps to frame round(*i* · n_frames / n_gt_rows), so the first and last 
 both ends of the video. The earlier version used frame *i* · 30, which drifted by between −0.97 s
 and +2.63 s by the end of a recording. Both versions are compared [below](#before--after-the-alignment-fix).
 
-**Signal processing** (same as `src/video_fixed_formula.py`):
+**Signal processing** (same as `src/video_spo2_hr_fixed_formula.py`):
 - 3-s window (90 frames) centred on the aligned frame
 - Butterworth band-pass, order 1, 0.67–4.0 Hz, `filtfilt`
 - AC = std of the filtered window, DC = mean of the raw window

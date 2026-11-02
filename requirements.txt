@@ -2,6 +2,6 @@ numpy>=2.0
 scipy>=1.13
 pandas>=2.2
 matplotlib>=3.9
-# only needed by src/video_fixed_formula.py (new videos) and its Excel export
+# only needed by src/video_spo2_hr_fixed_formula.py (new videos) and its Excel export
 opencv-python>=4.9
 openpyxl>=3.1
