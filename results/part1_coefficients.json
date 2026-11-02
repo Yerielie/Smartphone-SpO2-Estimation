@@ -6,13 +6,13 @@
   },
   "coefficients": {
     "red/blue": {
-      "a": 85.53984048061093,
-      "b": -3.0839861217899376,
+      "a": 85.47547662186301,
+      "b": -3.1521938085400993,
       "warning": "b <= 0: fitted SpO2 does not decrease with R; the fit is not physiologically meaningful"
     },
     "red/green": {
-      "a": 89.13270038270899,
-      "b": 1.0583968397303962
+      "a": 89.09313493247288,
+      "b": 1.0051828741308064
     }
   },
   "best_pair_by_loso_mae": "red/blue",
@@ -41,7 +41,7 @@
       "Left",
       "Right"
     ],
-    "n_windows": 11572,
+    "n_windows": 11568,
     "gt": "Masimo Radical-7 (SpO2 5)",
     "excluded": "GT SpO2 < 70 or missing"
   }

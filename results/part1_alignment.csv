@@ -1,4 +1,4 @@
-subject,hand,gt_rows,frames,frames_per_gt_row,frames_minus_30x_gt,drift_seconds
+subject,hand,gt_rows,frames,frames_per_gt_row,frames_minus_30x_gt,drift_seconds_if_i_times_30
 100001,Left,1090,32727,30.024770642201833,27,0.9
 100001,Right,1090,32713,30.011926605504588,13,0.43333333333333335
 100002,Left,1122,33631,29.974153297682708,-29,-0.9666666666666667

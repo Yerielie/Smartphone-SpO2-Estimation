@@ -3,8 +3,10 @@
 Smartphone PPG: data/raw/data/ppg-csv/{Left,Right}/<subject>.csv  (R,G,B mean pixel value, 30 Hz)
 Ground truth:   data/raw/data/gt/<subject>.csv                    (1 Hz, Masimo Radical-7 = "SpO2 5"/"Pulse 5")
 
-The camera and the oximeters were started and stopped together, so ground-truth row i
-is aligned to frame i * FPS (alignment by index, no timestamps on the video side).
+The camera and the oximeters were started and stopped together, but the recordings have
+29.97-30.09 frames per ground-truth row rather than exactly 30. Mapping row i to frame i*30
+would drift by up to 2.6 s by the end of a recording, so each recording is stretched to its
+own length instead: row i -> frame round(i * n_frames / n_gt_rows).
 """
 from pathlib import Path
 
@@ -50,13 +52,18 @@ def alignment_report():
                 "subject": s, "hand": h, "gt_rows": n_gt, "frames": n_frames,
                 "frames_per_gt_row": n_frames / n_gt,
                 "frames_minus_30x_gt": n_frames - FPS * n_gt,
-                "drift_seconds": (n_frames - FPS * n_gt) / FPS,
+                "drift_seconds_if_i_times_30": (n_frames - FPS * n_gt) / FPS,
             })
     return pd.DataFrame(rows)
 
 
+def gt_row_to_frame(i, n_frames, n_gt):
+    """Centre frame for ground-truth row i, scaled so first and last rows match both ends."""
+    return int(round(i * n_frames / n_gt))
+
+
 def build_windows(window_sec=3.0, min_spo2=MIN_SPO2):
-    """Cut one window of `window_sec` seconds centred on frame i*FPS for every GT row i.
+    """Cut one window of `window_sec` seconds centred on frame round(i * n_frames / n_gt) for every GT row i.
 
     Windows that would run past either end of the recording are skipped, as are rows
     with missing SpO2 or SpO2 < min_spo2. Missing pulse is kept as NaN.
@@ -72,13 +79,14 @@ def build_windows(window_sec=3.0, min_spo2=MIN_SPO2):
     r, g, b, spo2, pulse, subj, hand, idx = [], [], [], [], [], [], [], []
     for s in SUBJECTS:
         gt = load_ground_truth(s)
+        n_gt = len(gt)
         for h in HANDS:
             wave = load_ppg(s, h)
             n_frames = wave.shape[1]
             for i, row in gt.iterrows():
                 if np.isnan(row.spo2) or row.spo2 < min_spo2:
                     continue
-                start = i * FPS - half
+                start = gt_row_to_frame(i, n_frames, n_gt) - half
                 stop = start + win
                 if start < 0 or stop > n_frames:
                     continue
