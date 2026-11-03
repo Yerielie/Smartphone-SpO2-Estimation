@@ -46,8 +46,6 @@ FILTERS = (8, 16, 16)
 HIDDEN = 32
 SERIES2 = "#eb6834"   # second categorical slot (validation curve)
 
-torch.set_num_threads(4)
-
 
 # ---------------------------------------------------------------- model
 class SpO2CNN(nn.Module):
