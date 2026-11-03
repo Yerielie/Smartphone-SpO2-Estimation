@@ -32,7 +32,7 @@ from torch import nn
 
 from dataset import FPS, SUBJECTS, build_windows
 # Same metric functions and plot style as Section 2
-from public_data_spo2_hr_calibrated_formula import (HYPOX_THRESHOLD, INK, INK2, REF, SERIES,
+from public_data_spo2_hr_calibrated_formula import (INK, INK2, REF, SERIES,
                                                     _style, all_metrics)
 
 RESULTS = Path(__file__).resolve().parents[1] / "results"
@@ -259,9 +259,8 @@ def main():
     metrics.to_csv(RESULTS / "section3_metrics.csv", index=False)
     folds.to_csv(RESULTS / "section3_folds.csv", index=False)
     hist.to_csv(RESULTS / "section3_loss_history.csv", index=False)
-    pd.DataFrame({"subject": subj, "hand": d["hand"], "gt_index": d["gt_index"], "spo2": y,
-                  **{f"pred_seed{s}": preds[s] for s in SEEDS}}
-                 ).to_csv(RESULTS / "section3_predictions.csv", index=False)
+    # Window-level predictions are not saved: they would repeat the dataset's ground truth,
+    # and data is not committed to this repository.
 
     # Per-subject table: mean +/- sd over seeds
     keys = ["MAE", "RMSE", "R2", "bias", "sensitivity", "specificity"]
@@ -300,8 +299,8 @@ def main():
                   "no auto white balance, fixed channel gains R 1x / G 3x / B 18x"},
         "preprocessing": {"x_norm": "(x - x_mean[c]) / x_std[c] per channel c",
                           "x_mean": norm["x_mean"].tolist(), "x_std": norm["x_std"].tolist(),
-                          "no_filtering": True},
-        "output_denormalisation": {"spo2 = z * y_std + y_mean": True,
+                          "filtering": "none (raw frame means, no band-pass)"},
+        "output_denormalisation": {"formula": "spo2 = model_output * y_std + y_mean",
                                    "y_mean": norm["y_mean"], "y_std": norm["y_std"]},
         "training": {"subjects": SUBJECTS, "n_windows": int(len(y)), "seed": SEEDS[0],
                      "epochs": final_epochs, "epochs_rule": "median best-validation epoch of the LOSO runs",
