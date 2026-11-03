@@ -3,7 +3,9 @@
 All numbers below were produced by `python src/public_data_spo2_cnn.py`. Full-precision values are in
 `section3_metrics.csv`, `section3_per_subject.csv`, `section3_folds.csv` and `section3_loss_history.csv`.
 This summary rounds them to 2 decimals. A full run (18 LOSO models and the final model) takes about
-20 minutes on 4 CPU cores.
+20 minutes on a 4-core CPU with PyTorch's default thread count. The script was run twice, once with
+the thread count fixed at 4 and once with the default (also 4 on this machine), and both runs gave
+identical metrics and model files.
 
 ## Method
 
