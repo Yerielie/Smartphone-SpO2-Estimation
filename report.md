@@ -3,7 +3,7 @@
 ## Contents
 1. [Paper Analysis](#1-paper-analysis)
 2. [Ratio-of-Ratios (Formula)](#2-ratio-of-ratios-formula)
-3. CNN Reimplementation *(in progress)*
+3. [CNN Reimplementation](#3-cnn-reimplementation)
 4. Application to My Fingertip Video *(in progress)*
 5. Discussion and Limitations *(in progress)*
 
@@ -85,7 +85,7 @@ Ratio-of-ratios is the classical method used in medical pulse oximeters. It comp
 | R² | −0.71 | −0.26 | 0.21 |
 
 - Mean across the 6 test subjects. The red/green channel pair gave similar results.
-- Classifying SpO2 < 90% (calibrated formula): sensitivity 0.94, specificity 0.05
+- Classifying SpO2 < 90% (calibrated formula): sensitivity 94%, specificity 5%
 - Heart rate: MAE 3.22 bpm with a 10-second window, 4.68 bpm with a 3-second window
 
 ### 2.5 Findings
@@ -99,3 +99,53 @@ Ratio-of-ratios is the classical method used in medical pulse oximeters. It comp
 - Heart rate for new videos will use the 10-second window (Section 4)
 
 Full results, per-subject tables and figures: [results/section2_summary.md](results/section2_summary.md)
+
+---
+
+## 3. CNN Reimplementation
+
+### 3.1 Background
+Section 2 showed that a single formula cannot handle the differences between people. The paper addressed this with a CNN that learns the relationship between the RGB signal and SpO2 from data (MAE 5.00%, R² 0.61). The authors did not release the model code, so this section reimplements the CNN from the paper's description and evaluates it on the same public dataset.
+
+### 3.2 Data
+- **Source:** The paper's public dataset (6 subjects × 2 hands), same as Section 2
+- **Input:** One 3-second window of the R, G, B signals (3 × 90 frames)
+- **Ground truth:** Masimo Radical-7 SpO2, 1 Hz
+- **Exclusion:** SpO2 < 70%, following the paper
+- **Samples:** 11,568 three-second windows
+
+### 3.3 Method
+1. Build the CNN described in the paper: 3 convolutional layers + 2 fully connected layers, ReLU, kernel size 3, no padding
+2. Train with the paper's settings: MSE loss, Adam (learning rate 0.00001, reduced 10-fold after 80 epochs), L2 regularisation 0.1
+3. Evaluate with leave-one-subject-out cross-validation: 4 subjects for training, 1 for validation, 1 for testing, repeated 6 times
+4. Repeat the whole evaluation with 3 random seeds and report the mean ± SD, so the result does not depend on one run
+5. Train a final model on all 6 subjects for use on new videos (Section 4)
+
+Settings not given in the paper (number of filters, input normalisation, batch size, number of epochs) were fixed before training and are listed in the full results. No setting was tuned on the test subjects.
+
+### 3.4 Results
+| Metric | Paper CNN | Section 2 (calibrated formula) | Section 3 CNN |
+|---|---|---|---|
+| MAE | 5.00% | 7.49% | 5.24 ± 0.77% |
+| R² | 0.61 | −0.26 | 0.34 ± 0.18 |
+| Sensitivity (SpO2 < 90%) | 81% | 94% | 87 ± 6% |
+| Specificity (SpO2 < 90%) | 79% | 5% | 61 ± 11% |
+| Arms | 5.55% | — | 6.49 ± 0.95% |
+
+- MAE and R²: mean across the 6 test subjects. Sensitivity, specificity and Arms: all test samples pooled. ± is the SD across 3 seeds.
+- MAE by seed: 4.73%, 6.13%, 4.84%
+
+### 3.5 Findings
+- **Improvement over the formula:** MAE fell from 7.49% to 5.24% and R² became positive. The CNN had a lower error than the formula for every subject, and R² was positive for 5 of 6 subjects (0 of 6 in Section 2).
+- **Gap with the paper:** MAE is close to the paper's, but R² and specificity are lower. Predictions are pulled toward the average: below 80% they are over-predicted by 7–10 points, and above 95% under-predicted by 4–6 points. The paper also reported over-prediction below 80%.
+- **Variation between runs:** Results changed noticeably with the random seed. The stopping point of training is chosen with a single validation subject, and this choice was unstable (best epoch ranged from 2 to 77).
+- **Individual differences:** Subject 100001 again had the largest error (MAE 7.55%), but less than in Section 2 (11.17%) and the paper (8.56%).
+- **Clinical use:** Arms is above the 3.5% required by ISO 80601-2-61, as in the paper.
+
+### 3.6 Implications for Section 4
+- The final model was trained on all 6 subjects for 16 epochs (the median best epoch from cross-validation)
+- The training data was recorded on one phone (Nexus 6P) with locked camera settings, so a video from a different phone is likely to give larger errors
+- Because results vary between runs, averaging several models may give more stable estimates on new videos
+- Heart rate will use the 10-second window from Section 2
+
+Full results, per-subject tables and figures: [results/section3_summary.md](results/section3_summary.md)
